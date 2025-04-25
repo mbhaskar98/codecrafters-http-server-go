@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 	"strings"
 )
 
 type RequestParser struct {
 }
 
-func (p *RequestParser) Parse(request []byte) (*HttpRequest, error) {
+func (p *RequestParser) Parse(request []byte) (*httpMessage.Request, error) {
 	// Split headers and body
 	parts := bytes.SplitN(request, []byte("\r\n\r\n"), 2)
 	if len(parts) < 1 {
@@ -39,7 +40,7 @@ func (p *RequestParser) Parse(request []byte) (*HttpRequest, error) {
 	version := requestLine[2]
 
 	// Parse headers
-	headers := make(Header)
+	headers := make(httpMessage.Header)
 	for _, line := range lines[1:] {
 		colonIdx := strings.Index(line, ":")
 		if colonIdx == -1 {
@@ -50,8 +51,8 @@ func (p *RequestParser) Parse(request []byte) (*HttpRequest, error) {
 		headers[key] = append(headers[key], value)
 	}
 
-	// Return parsed HttpRequest
-	return &HttpRequest{
+	// Return parsed Request
+	return &httpMessage.Request{
 		Version: &version,
 		Method:  &method,
 		Path:    &path,

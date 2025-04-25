@@ -3,12 +3,13 @@ package httpServer
 import (
 	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 	"strings"
 )
 
 type RequestHandler struct{}
 
-func (r *RequestHandler) HandleRequest(request HttpRequest) (*HttpResponse, error) {
+func (r *RequestHandler) HandleRequest(request httpMessage.Request) (*httpMessage.Response, error) {
 	status := constants.ERROR_CODE_OK
 	message := constants.STATUS_OK
 
@@ -22,9 +23,9 @@ func (r *RequestHandler) HandleRequest(request HttpRequest) (*HttpResponse, erro
 		status = constants.ERROR_CODE_NOT_FOUND
 		message = constants.STATUS_NOT_FOUND
 	}
-	response := &HttpResponse{
+	response := &httpMessage.Response{
 		Status: status,
-		Headers: Header{
+		Headers: httpMessage.Header{
 			"Content-Type": []string{"text/plain"},
 			"Connection":   []string{"close"},
 		},

@@ -1,11 +1,11 @@
-package httpServer
+package httpMessage
 
 import (
 	"fmt"
 	"strings"
 )
 
-type HttpResponse struct {
+type Response struct {
 	Status  int
 	Body    []byte
 	Headers Header
@@ -15,7 +15,7 @@ type HttpResponse struct {
 	Code    int
 }
 
-func (r *HttpResponse) ToString() string {
+func (r *Response) ToString() string {
 	var response strings.Builder
 	response.WriteString(fmt.Sprintf("%s %d %s\r\n", r.Version, r.Status, r.Message))
 

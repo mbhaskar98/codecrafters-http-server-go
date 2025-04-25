@@ -1,11 +1,11 @@
-package httpServer
+package httpMessage
 
 import (
 	"fmt"
 	"strings"
 )
 
-type HttpRequest struct {
+type Request struct {
 	Version *string
 	Method  *string
 	Path    *string
@@ -13,7 +13,7 @@ type HttpRequest struct {
 	Headers Header
 }
 
-func (msg *HttpRequest) ToString() string {
+func (msg *Request) ToString() string {
 	var builder strings.Builder
 
 	// Write request line
