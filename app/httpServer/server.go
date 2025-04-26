@@ -15,16 +15,22 @@ type Server struct {
 
 func (server *Server) Run() {
 	for {
-		data, conn, err := server.getRequest()
+		data, conn, err := server.getData()
 		if err != nil {
 			fmt.Println("Error getting request: ", err.Error())
 			return
 		}
-		go server.newRequest(data, conn)
+		go server.serveRequest(data, conn)
 	}
 }
 
-func (server *Server) newRequest(data []byte, conn net.Conn) {
+func (server *Server) serveRequest(data []byte, conn net.Conn) {
+	defer func(conn net.Conn) {
+		err := conn.Close()
+		if err != nil {
+			fmt.Println("Error closing connection: ", err.Error())
+		}
+	}(conn)
 
 	httpRequest, err := server.parser.Parse(data)
 	if err != nil {
@@ -44,7 +50,7 @@ func (server *Server) newRequest(data []byte, conn net.Conn) {
 	}
 }
 
-func (server *Server) getRequest() ([]byte, net.Conn, error) {
+func (server *Server) getData() ([]byte, net.Conn, error) {
 	conn, err := server.listener.Accept()
 	if err != nil {
 		fmt.Println("Error accepting connection: ", err.Error())
@@ -65,10 +71,6 @@ func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) 
 	if err != nil {
 		fmt.Println("Error writing to connection: ", err.Error())
 		return -1, err
-	}
-	err = conn.Close()
-	if err != nil {
-		fmt.Println("Error closing connection: ", err.Error())
 	}
 	return n, err
 }
