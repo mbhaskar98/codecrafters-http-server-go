@@ -1,4 +1,4 @@
-package httpServer
+package parser
 
 import (
 	"bytes"
@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-type RequestParser struct {
+type requestParser struct {
 }
 
-func (p *RequestParser) Parse(request []byte) (*httpMessage.Request, error) {
+func (p *requestParser) Parse(request []byte) (*httpMessage.Request, error) {
 	// Split headers and body
 	parts := bytes.SplitN(request, []byte("\r\n\r\n"), 2)
 	if len(parts) < 1 {
@@ -61,6 +61,8 @@ func (p *RequestParser) Parse(request []byte) (*httpMessage.Request, error) {
 	}, nil
 }
 
-func NewRequestParser() *RequestParser {
-	return &RequestParser{}
+func NewRequestParser() IParser {
+	return &requestParser{}
 }
+
+var _ IParser = (*requestParser)(nil)

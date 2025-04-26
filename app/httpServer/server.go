@@ -2,13 +2,15 @@ package httpServer
 
 import (
 	"fmt"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/parser"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/router"
 	"net"
 )
 
 type Server struct {
 	listener net.Listener
-	parser   *RequestParser
-	handler  *RequestHandler
+	parser   parser.IParser
+	router   router.IRouter
 }
 
 func (server *Server) Run() {
@@ -23,7 +25,7 @@ func (server *Server) Run() {
 			fmt.Println("Error parsing request: ", err.Error())
 			return
 		}
-		httpResponse, err := server.handler.HandleRequest(*httpRequest)
+		httpResponse, err := server.router.HandleRequest(httpRequest)
 		if err != nil {
 			fmt.Println("Error handling request: ", err.Error())
 			return
@@ -54,11 +56,6 @@ func (server *Server) getRequest() ([]byte, net.Conn, error) {
 }
 
 func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) {
-	//conn, err := server.listener.Accept()
-	//if err != nil {
-	//	fmt.Println("Error accepting connection: ", err.Error())
-	//	os.Exit(1)
-	//}
 	n, err := conn.Write(response)
 
 	if err != nil {
@@ -72,7 +69,7 @@ func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) 
 	return n, err
 }
 
-func NewServer(parser *RequestParser, handler *RequestHandler) (*Server, error) {
+func NewServer(parser parser.IParser, router router.IRouter) (*Server, error) {
 	l, err := net.Listen("tcp", "0.0.0.0:4221")
 	if err != nil {
 		fmt.Println("Failed to bind to port 4221")
@@ -81,6 +78,6 @@ func NewServer(parser *RequestParser, handler *RequestHandler) (*Server, error) 
 	return &Server{
 		listener: l,
 		parser:   parser,
-		handler:  handler,
+		router:   router,
 	}, nil
 }
