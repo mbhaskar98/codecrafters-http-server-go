@@ -20,23 +20,27 @@ func (server *Server) Run() {
 			fmt.Println("Error getting request: ", err.Error())
 			return
 		}
-		httpRequest, err := server.parser.Parse(data)
-		if err != nil {
-			fmt.Println("Error parsing request: ", err.Error())
-			return
-		}
-		httpResponse, err := server.router.HandleRequest(httpRequest)
-		if err != nil {
-			fmt.Println("Error handling request: ", err.Error())
-			return
-		}
-		fmt.Println(httpResponse.ToString())
-		_, err = server.sendResponse([]byte(httpResponse.ToString()), conn)
-		if err != nil {
-			fmt.Println("Error sending response: ", err.Error())
-			return
-		}
+		go server.newRequest(data, conn)
+	}
+}
 
+func (server *Server) newRequest(data []byte, conn net.Conn) {
+
+	httpRequest, err := server.parser.Parse(data)
+	if err != nil {
+		fmt.Println("Error parsing request: ", err.Error())
+		return
+	}
+	httpResponse, err := server.router.HandleRequest(httpRequest)
+	if err != nil {
+		fmt.Println("Error handling request: ", err.Error())
+		return
+	}
+	fmt.Println(httpResponse.ToString())
+	_, err = server.sendResponse([]byte(httpResponse.ToString()), conn)
+	if err != nil {
+		fmt.Println("Error sending response: ", err.Error())
+		return
 	}
 }
 
