@@ -15,16 +15,21 @@ type Server struct {
 
 func (server *Server) Run() {
 	for {
-		data, conn, err := server.getData()
+		conn, err := server.listener.Accept()
 		if err != nil {
-			fmt.Println("Error getting request: ", err.Error())
-			return
+			fmt.Println("Error accepting connection:", err)
+			continue
 		}
-		go server.serveRequest(data, conn)
+		go server.serveRequest(conn)
 	}
 }
 
-func (server *Server) serveRequest(data []byte, conn net.Conn) {
+func (server *Server) serveRequest(conn net.Conn) {
+	data, err := server.getData(conn)
+	if err != nil {
+		fmt.Println("Error getting request: ", err.Error())
+		return
+	}
 	defer func(conn net.Conn) {
 		err := conn.Close()
 		if err != nil {
@@ -42,7 +47,6 @@ func (server *Server) serveRequest(data []byte, conn net.Conn) {
 		fmt.Println("Error handling request: ", err.Error())
 		return
 	}
-	fmt.Println(httpResponse.ToString())
 	_, err = server.sendResponse([]byte(httpResponse.ToString()), conn)
 	if err != nil {
 		fmt.Println("Error sending response: ", err.Error())
@@ -50,19 +54,14 @@ func (server *Server) serveRequest(data []byte, conn net.Conn) {
 	}
 }
 
-func (server *Server) getData() ([]byte, net.Conn, error) {
-	conn, err := server.listener.Accept()
-	if err != nil {
-		fmt.Println("Error accepting connection: ", err.Error())
-		return nil, nil, err
-	}
+func (server *Server) getData(conn net.Conn) ([]byte, error) {
 	bytes := make([]byte, 1024)
-	_, err = conn.Read(bytes)
+	_, err := conn.Read(bytes)
 	if err != nil {
 		fmt.Println("Error reading from connection: ", err.Error())
-		return nil, nil, err
+		return nil, err
 	}
-	return bytes, conn, nil
+	return bytes, nil
 }
 
 func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) {
