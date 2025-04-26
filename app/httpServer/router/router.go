@@ -22,7 +22,7 @@ func (r *router) HandleRequest(request *httpMessage.Request) (*httpMessage.Respo
 	if *request.Path == "/" {
 		return r.defaultHandler.Handle(request)
 	}
-	return r.notFoundHandler.Handle(request)
+	return r.defaultHandler.Handle(request)
 }
 
 func NewRouter(
