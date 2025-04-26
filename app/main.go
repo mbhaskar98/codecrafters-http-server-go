@@ -15,6 +15,7 @@ func main() {
 	p := parser.NewRequestParser()
 	r := router.NewRouter(
 		httpServer.GenerateRoutes(),
+		handlers.NewDefaultRequestHomeHandler(),
 		handlers.NewNotFoundHandler(),
 	)
 	server, err := httpServer.NewServer(p, r)

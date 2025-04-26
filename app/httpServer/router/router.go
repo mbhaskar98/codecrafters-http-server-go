@@ -9,6 +9,7 @@ import (
 type router struct {
 	routes          map[string]handlers.IHandler
 	notFoundHandler handlers.IHandler
+	defaultHandler  handlers.IHandler
 }
 
 func (r *router) HandleRequest(request *httpMessage.Request) (*httpMessage.Response, error) {
@@ -18,12 +19,20 @@ func (r *router) HandleRequest(request *httpMessage.Request) (*httpMessage.Respo
 			return handler.Handle(request)
 		}
 	}
+	if *request.Path == "/" {
+		return r.defaultHandler.Handle(request)
+	}
 	return r.notFoundHandler.Handle(request)
 }
 
-func NewRouter(routes map[string]handlers.IHandler, notFoundHandler handlers.IHandler) IRouter {
+func NewRouter(
+	routes map[string]handlers.IHandler,
+	defaultHandler handlers.IHandler,
+	notFoundHandler handlers.IHandler,
+) IRouter {
 	return &router{
 		routes:          routes,
 		notFoundHandler: notFoundHandler,
+		defaultHandler:  defaultHandler,
 	}
 }
