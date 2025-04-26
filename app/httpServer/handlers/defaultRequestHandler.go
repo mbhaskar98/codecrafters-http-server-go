@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 )
@@ -9,21 +8,21 @@ import (
 type defaultRequestHandler struct {
 }
 
-func (d defaultRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.Response, error) {
+func (d *defaultRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.Response, error) {
 	status := constants.ERROR_CODE_OK
 	message := constants.STATUS_OK
 
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type": []string{"text/plain"},
+			"Content-Type":   []string{"text/plain"},
+			"Content-Length": []string{"0"},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
 		Reason:  message,
 		Code:    status,
 	}
-	response.Headers["Content-Length"] = []string{fmt.Sprintf("0")}
 	return response, nil
 }
 

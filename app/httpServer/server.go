@@ -7,10 +7,15 @@ import (
 	"net"
 )
 
+type Config struct {
+	Directory string
+}
+
 type Server struct {
 	listener net.Listener
 	parser   parser.IParser
 	router   router.IRouter
+	config   Config
 }
 
 func (server *Server) Run() {
@@ -75,7 +80,11 @@ func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) 
 	return n, err
 }
 
-func NewServer(parser parser.IParser, router router.IRouter) (*Server, error) {
+func NewServer(
+	parser parser.IParser,
+	router router.IRouter,
+	config Config,
+) (*Server, error) {
 	l, err := net.Listen("tcp", "0.0.0.0:4221")
 	if err != nil {
 		fmt.Println("Failed to bind to port 4221")
@@ -85,5 +94,6 @@ func NewServer(parser parser.IParser, router router.IRouter) (*Server, error) {
 		listener: l,
 		parser:   parser,
 		router:   router,
+		config:   config,
 	}, nil
 }

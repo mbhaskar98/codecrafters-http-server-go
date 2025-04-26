@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 )
@@ -16,15 +15,15 @@ func (n *notFoundHandler) Handle(request *httpMessage.Request) (*httpMessage.Res
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type": []string{"text/plain"},
-			"Connection":   []string{"close"},
+			"Content-Type":   []string{"text/plain"},
+			"Content-Length": []string{"0"},
+			"Connection":     []string{"close"},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
 		Reason:  message,
 		Code:    status,
 	}
-	response.Headers["Content-Length"] = []string{fmt.Sprintf("0")}
 	return response, nil
 }
 

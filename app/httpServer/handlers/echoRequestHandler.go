@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
+	"strconv"
 	"strings"
 )
 
@@ -18,17 +18,15 @@ func (e *echoRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type": []string{"text/plain"},
+			"Content-Type":   []string{"text/plain"},
+			"Content-Length": []string{strconv.Itoa(len(body))},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
 		Reason:  message,
 		Code:    status,
+		Body:    []byte(body),
 	}
-	if len(body) > 0 {
-		response.Body = []byte(body)
-	}
-	response.Headers["Content-Length"] = []string{fmt.Sprintf("%d", len(body))}
 
 	return response, nil
 }

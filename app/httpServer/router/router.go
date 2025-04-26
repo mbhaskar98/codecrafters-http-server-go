@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/handlers"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 	"strings"
@@ -16,7 +17,12 @@ func (r *router) HandleRequest(request *httpMessage.Request) (*httpMessage.Respo
 	// TODO: Use better routing algorithm, e.g. trie
 	for prefix, handler := range r.routes {
 		if strings.HasPrefix(*request.Path, prefix) {
-			return handler.Handle(request)
+			response, err := handler.Handle(request)
+			if err != nil {
+				fmt.Println("Error handling request: ", err.Error())
+				return r.notFoundHandler.Handle(request)
+			}
+			return response, nil
 		}
 	}
 	if *request.Path == "/" {
