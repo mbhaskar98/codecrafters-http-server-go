@@ -20,7 +20,6 @@ func (u userAgentRequestHandler) Handle(request *httpMessage.Request) (*httpMess
 		Status: status,
 		Headers: httpMessage.Header{
 			"Content-Type": []string{"text/plain"},
-			//"Connection":   []string{"close"},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
