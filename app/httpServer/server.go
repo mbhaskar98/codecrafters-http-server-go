@@ -25,17 +25,18 @@ func (server *Server) Run() {
 }
 
 func (server *Server) serveRequest(conn net.Conn) {
-	data, err := server.getData(conn)
-	if err != nil {
-		fmt.Println("Error getting request: ", err.Error())
-		return
-	}
 	defer func(conn net.Conn) {
 		err := conn.Close()
 		if err != nil {
 			fmt.Println("Error closing connection: ", err.Error())
 		}
 	}(conn)
+
+	data, err := server.getData(conn)
+	if err != nil {
+		fmt.Println("Error getting request: ", err.Error())
+		return
+	}
 
 	httpRequest, err := server.parser.Parse(data)
 	if err != nil {
