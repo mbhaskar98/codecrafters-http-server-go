@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 )
@@ -23,7 +24,7 @@ func (n *notFoundHandler) Handle(request *httpMessage.Request) (*httpMessage.Res
 		Reason:  message,
 		Code:    status,
 	}
-
+	response.Headers["Content-Length"] = []string{fmt.Sprintf("0")}
 	return response, nil
 }
 

@@ -28,8 +28,8 @@ func (u userAgentRequestHandler) Handle(request *httpMessage.Request) (*httpMess
 	}
 	if len(body) > 0 {
 		response.Body = []byte(body)
-		response.Headers["Content-Length"] = []string{fmt.Sprintf("%d", len(body))}
 	}
+	response.Headers["Content-Length"] = []string{fmt.Sprintf("%d", len(body))}
 
 	return response, nil
 }
