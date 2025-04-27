@@ -15,8 +15,8 @@ func (d *defaultRequestHandler) Handle(request *httpMessage.Request) (*httpMessa
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type":   []string{"text/plain"},
-			"Content-Length": []string{"0"},
+			constants.HEADER_CONTENT_TYPE:   []string{"text/plain"},
+			constants.HEADER_CONTENT_LENGTH: []string{"0"},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,

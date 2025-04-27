@@ -18,8 +18,8 @@ func (e *echoRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type":   []string{"text/plain"},
-			"Content-Length": []string{strconv.Itoa(len(body))},
+			constants.HEADER_CONTENT_TYPE:   []string{"text/plain"},
+			constants.HEADER_CONTENT_LENGTH: []string{strconv.Itoa(len(body))},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
@@ -27,7 +27,11 @@ func (e *echoRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.
 		Code:    status,
 		Body:    []byte(body),
 	}
-
+	/**
+	safasf
+	asfasfasg
+	asfgasg
+	*/
 	return response, nil
 }
 

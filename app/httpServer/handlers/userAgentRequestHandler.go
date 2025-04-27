@@ -10,7 +10,7 @@ type userAgentRequestHandler struct {
 }
 
 func (u *userAgentRequestHandler) Handle(request *httpMessage.Request) (*httpMessage.Response, error) {
-	userAgent := request.Headers["User-Agent"][0]
+	userAgent := request.Headers[constants.HEADER_USER_AGENT][0]
 
 	status := constants.ERROR_CODE_OK
 	message := constants.STATUS_OK
@@ -19,8 +19,8 @@ func (u *userAgentRequestHandler) Handle(request *httpMessage.Request) (*httpMes
 	response := &httpMessage.Response{
 		Status: status,
 		Headers: httpMessage.Header{
-			"Content-Type":   []string{"text/plain"},
-			"Content-Length": []string{strconv.Itoa(len(body))},
+			constants.HEADER_CONTENT_TYPE:   []string{"text/plain"},
+			constants.HEADER_CONTENT_LENGTH: []string{strconv.Itoa(len(body))},
 		},
 		Version: constants.HTTP_VERSION_1_1,
 		Message: message,
