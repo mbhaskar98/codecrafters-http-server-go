@@ -2,6 +2,8 @@ package httpServer
 
 import (
 	"fmt"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/constants"
+	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/httpMessage"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/parser"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/router"
 	"net"
@@ -53,6 +55,7 @@ func (server *Server) serveRequest(conn net.Conn) {
 		fmt.Println("Error handling request: ", err.Error())
 		return
 	}
+	server.compressResponse(httpRequest, httpResponse)
 	_, err = server.sendResponse([]byte(httpResponse.ToString()), conn)
 	if err != nil {
 		fmt.Println("Error sending response: ", err.Error())
@@ -78,6 +81,22 @@ func (server *Server) sendResponse(response []byte, conn net.Conn) (int, error) 
 		return -1, err
 	}
 	return n, err
+}
+
+func (server *Server) compressResponse(req *httpMessage.Request, resp *httpMessage.Response) {
+	if len(req.Headers[constants.HEADER_ACCEPT_ENCODING]) == 0 {
+		return
+	}
+	data, err := Compress(
+		resp.Body,
+		SupportedCompressionTechniques(req.Headers[constants.HEADER_ACCEPT_ENCODING][0]),
+	)
+	if err != nil {
+		fmt.Println("Error compressing response: ", err.Error())
+		return
+	}
+	resp.Body = data
+	resp.Headers[constants.HEADER_CONTENT_ENCODING] = []string{req.Headers[constants.HEADER_ACCEPT_ENCODING][0]}
 }
 
 func NewServer(

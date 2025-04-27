@@ -12,7 +12,9 @@ const (
 	HEADER_DATE     = "Date"
 
 	// Content Headers
-	HEADER_ACCEPT          = "Accept"
-	HEADER_ACCEPT_ENCODING = "Accept-Encoding"
-	HEADER_ACCEPT_LANGUAGE = "Accept-Language"
+	HEADER_ACCEPT           = "Accept"
+	HEADER_ACCEPT_ENCODING  = "Accept-Encoding"
+	HEADER_ACCEPT_LANGUAGE  = "Accept-Language"
+	HEADER_CONTENT_ENCODING = "Content-Encoding"
+	HEADER_CONTENT_LANGUAGE = "Content-Language"
 )
