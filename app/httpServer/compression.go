@@ -4,17 +4,25 @@ import (
 	"fmt"
 )
 
-type SupportedCompressionTechniques string
+type SupportedEncodingMethods string
 
 const (
-	GZIP SupportedCompressionTechniques = "gzip"
+	GZIP SupportedEncodingMethods = "gzip"
 )
 
-func Compress(data []byte, technique SupportedCompressionTechniques) ([]byte, error) {
-	switch technique {
+var supportedEncodingMethods = map[SupportedEncodingMethods]bool{
+	GZIP: true,
+}
+
+func Compress(data []byte, method string) ([]byte, error) {
+	m := SupportedEncodingMethods(method)
+	if ok := supportedEncodingMethods[m]; !ok {
+		return data, fmt.Errorf("unsupported compression technique: %s", m)
+	}
+	switch m {
 	case GZIP:
 		return data, nil
 	default:
-		return data, fmt.Errorf("unsupported compression technique: %s", technique)
+		return data, fmt.Errorf("unsupported compression technique: %s", m)
 	}
 }

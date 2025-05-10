@@ -7,6 +7,7 @@ import (
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/parser"
 	"github.com/codecrafters-io/http-server-starter-go/app/httpServer/router"
 	"net"
+	"strings"
 )
 
 type Config struct {
@@ -87,16 +88,21 @@ func (server *Server) compressResponse(req *httpMessage.Request, resp *httpMessa
 	if len(req.Headers[constants.HEADER_ACCEPT_ENCODING]) == 0 {
 		return
 	}
-	data, err := Compress(
-		resp.Body,
-		SupportedCompressionTechniques(req.Headers[constants.HEADER_ACCEPT_ENCODING][0]),
-	)
-	if err != nil {
-		fmt.Println("Error compressing response: ", err.Error())
-		return
+
+	acceptedEncodings := strings.Split(req.Headers[constants.HEADER_ACCEPT_ENCODING][0], ",")
+	for _, encoding := range acceptedEncodings {
+		encoding = strings.TrimSpace(encoding)
+		data, err := Compress(
+			resp.Body,
+			encoding,
+		)
+		if err != nil {
+			fmt.Println("Error compressing response: ", err.Error())
+			continue
+		}
+		resp.Body = data
+		resp.Headers[constants.HEADER_CONTENT_ENCODING] = []string{encoding}
 	}
-	resp.Body = data
-	resp.Headers[constants.HEADER_CONTENT_ENCODING] = []string{req.Headers[constants.HEADER_ACCEPT_ENCODING][0]}
 }
 
 func NewServer(
